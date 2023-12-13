@@ -33,4 +33,11 @@ public class PostsController : ControllerBase
         var posts = await postService.Search(text);
         return Ok(posts);
     }
+
+    [HttpGet("topten")]
+    public async Task<IActionResult> TopTen()
+    {
+        var posts = await postService.TopTen();
+        return Ok(posts);
+    }
 }

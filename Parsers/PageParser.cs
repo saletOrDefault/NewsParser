@@ -8,7 +8,7 @@ namespace NewsParser.Parsers;
 
 public static class PageParser
 {
-    private static readonly List<string> knownTags = new List<string> { "<p>", "</p>", "<strong>", "</strong>", "</br>", "<em>", "</em>" };
+    private static readonly List<string> knownTags = new List<string> { "<p>", "</p>", "<strong>", "</strong>", "</br>", "<em>", "</em>" , "<sup>", "</sup>"};
 
     public static Post Parse(string fileContent)
     {

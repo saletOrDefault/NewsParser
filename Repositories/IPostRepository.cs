@@ -7,5 +7,6 @@ namespace NewsParser.Repositories
         Task<IEnumerable<Post>> GetAll(DateTime? dateFrom, DateTime? dateTo);
         Task<IEnumerable<Post>> Search(string text);
         Task Create(Post post);
+        Task<IEnumerable<PostTopResponse>> TopTen();
     }
 }

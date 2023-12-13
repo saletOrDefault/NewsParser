@@ -64,9 +64,11 @@ public class DataContext
                 IF OBJECT_ID('Posts') IS NULL
                 CREATE TABLE Posts (
                     Id INT NOT NULL PRIMARY KEY IDENTITY,
-                    Title NVARCHAR(MAX),
+                    Title NVARCHAR(500),
                     Content NVARCHAR(MAX),
-                    PostedDate DATE
+                    PostedDate DATE,
+                    CleanedContent NVARCHAR(MAX),
+                    CONSTRAINT uniquePost UNIQUE(Title, PostedDate)
                 );
             ";
         await connection.ExecuteAsync(sql);

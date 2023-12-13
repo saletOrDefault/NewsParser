@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace NewsParser.Models.Posts
 {
     public class Post
@@ -6,5 +8,8 @@ namespace NewsParser.Models.Posts
         public string? Title { get; set; }
         public string? Content { get; set; }
         public DateTime PostedDate { get; set; }
+
+        [JsonIgnore]
+        public string? CleanedContent { get; set; }
     }
 }

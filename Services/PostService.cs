@@ -21,4 +21,9 @@ public class PostService : IPostService
     {
         return await postRepository.Search(text);
     }
+
+    public async Task<IEnumerable<PostTopResponse>> TopTen()
+    {
+        return await postRepository.TopTen();
+    }
 }

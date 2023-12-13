@@ -22,12 +22,6 @@ public class UsersController : ControllerBase
         this.config = config;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Hello()
-    {
-        return Ok();
-    }
-
     [HttpPost("login")]
     [AllowAnonymous]
     public async Task<IActionResult> Login(UserRequest model)

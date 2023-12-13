@@ -1,5 +1,8 @@
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using Dapper;
+using Microsoft.Data.SqlClient;
 using NewsParser.Database;
 using NewsParser.Models.Posts;
 
@@ -48,12 +51,33 @@ public class PostRepository : IPostRepository
     public async Task Create(Post post)
     {
         using var connection = context.CreateConnection();
+        Regex regex = new Regex(@"[^a-zа-яё\s]");
+        post.CleanedContent = regex.Replace(post.Content!.ToLower(CultureInfo.InvariantCulture), "").Replace("\n", "").Trim();
         var sql = @"
-            IF NOT EXISTS (SELECT * FROM Posts 
-                   WHERE Title = @Title)
-            INSERT INTO Posts (Title, Content, PostedDate)
-            VALUES (@Title, @Content, @PostedDate)
+            INSERT INTO Posts (Title, Content, PostedDate, CleanedContent)
+            VALUES (@Title, @Content, @PostedDate, @CleanedContent)
         ";
-        await connection.ExecuteAsync(sql, post);
+        try
+        {
+            await connection.ExecuteAsync(sql, post);
+        }
+        catch (SqlException ex) when (ex.Message.Contains("Violation of UNIQUE KEY constraint"))
+        {
+            // skip duplicate
+        }
+    }
+
+    public async Task<IEnumerable<PostTopResponse>> TopTen()
+    {
+        using var connection = context.CreateConnection();
+        var sql = @"
+            SELECT TOP 10 value as word, COUNT(*) AS [NumberOfOccurence]
+            FROM Posts
+            CROSS APPLY STRING_SPLIT(CleanedContent, ' ')
+            GROUP BY value
+            HAVING LEN(value) > 0
+            ORDER BY COUNT(*) DESC
+            ";
+        return await connection.QueryAsync<PostTopResponse>(sql);
     }
 }
