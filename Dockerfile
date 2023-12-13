@@ -19,4 +19,5 @@ RUN dotnet publish "NewsParser.csproj" -c Release -o /app/publish /p:UseAppHost=
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ADD Pages /app/Pages
 ENTRYPOINT ["dotnet", "NewsParser.dll"]

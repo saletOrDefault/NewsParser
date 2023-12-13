@@ -37,7 +37,7 @@ namespace NewsParser.Helpers
             else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
             else if (exception is NotImplementedException) code = HttpStatusCode.NotImplemented;
 
-            var result = JsonSerializer.Serialize(new { error = exception.Message });
+            var result = JsonSerializer.Serialize(new { error = code == HttpStatusCode.InternalServerError ? "Internal Error" : exception.Message });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
 

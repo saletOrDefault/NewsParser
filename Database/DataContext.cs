@@ -4,6 +4,7 @@ using System.Data;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using NewsParser.Repositories;
 
 public class DataContext
 {
@@ -40,11 +41,12 @@ public class DataContext
         // create tables if they don't exist
         using var connection = CreateConnection();
         await InitUsers(connection);
+        await InitPosts(connection);
     }
 
     private async Task InitUsers(IDbConnection connection)
-        {
-            var sql = @"
+    {
+        var sql = @"
                 IF OBJECT_ID('Users', 'U') IS NULL
                 CREATE TABLE Users (
                     Id INT NOT NULL PRIMARY KEY IDENTITY,
@@ -53,6 +55,20 @@ public class DataContext
                     PasswordSalt NVARCHAR(MAX)
                 );
             ";
-            await connection.ExecuteAsync(sql);
-        }
+        await connection.ExecuteAsync(sql);
+    }
+
+    private async Task InitPosts(IDbConnection connection)
+    {
+        var sql = @"
+                IF OBJECT_ID('Posts') IS NULL
+                CREATE TABLE Posts (
+                    Id INT NOT NULL PRIMARY KEY IDENTITY,
+                    Title NVARCHAR(MAX),
+                    Content NVARCHAR(MAX),
+                    PostedDate DATE
+                );
+            ";
+        await connection.ExecuteAsync(sql);
+    }
 }
