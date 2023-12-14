@@ -8,7 +8,7 @@ namespace NewsParser.Parsers;
 
 public static class PageParser
 {
-    private static readonly List<string> knownTags = new List<string> { "<p>", "</p>", "<strong>", "</strong>", "</br>", "<em>", "</em>" , "<sup>", "</sup>"};
+    private static readonly List<string> knownTags = new List<string> { "<p>", "</p>", "<strong>", "</strong>", "</br>", "<em>", "</em>" , "<sup>", "</sup>", "<li>", "</li>"};
 
     public static Post Parse(string fileContent)
     {
@@ -45,7 +45,7 @@ public static class PageParser
         if (index != -1)
         {
             string line = date[(index + toBeSearched.Length)..];
-            return DateTime.Parse(line.Replace("\">", ""));
+            return DateTime.Parse(line.Replace(">", "").Replace("\"", "").Replace("/", ""));
         }
         else throw new MyException("Date not found");
     }
@@ -60,7 +60,7 @@ public static class PageParser
             {
                 break;
             }
-            if (html[i].Contains("<p>") && !html[i].Contains("<img") && !html[i].Contains("<figure"))
+            if ((html[i].Contains("<p>") || html[i].Contains("<li>")) && !html[i].Contains("<img") && !html[i].Contains("<figure") && !html[i].Contains("<iframe"))
             {
                 var sb = new StringBuilder(html[i]);
                 string line = "";

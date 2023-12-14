@@ -1,10 +1,9 @@
 using NewsParser.Models.Users;
 
-namespace NewsParser.Repositories
+namespace NewsParser.Repositories;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        Task<User?> Get(string login);
-        Task Create(User user);
-    }
+    Task<User?> Get(string login);
+    Task Create(User user);
 }

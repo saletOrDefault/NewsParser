@@ -1,6 +1,6 @@
-namespace NewsParser.Services;
-
 using NewsParser.Models.Posts;
+
+namespace NewsParser.Services;
 
 public interface IPostService
 {

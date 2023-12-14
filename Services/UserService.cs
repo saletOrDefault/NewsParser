@@ -1,7 +1,5 @@
 using NewsParser.Models.Users;
 using NewsParser.Repositories;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using NewsParser.Helpers;
 

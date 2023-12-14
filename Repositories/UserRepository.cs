@@ -1,3 +1,4 @@
+using System.Data;
 using Dapper;
 using NewsParser.Database;
 using NewsParser.Models.Users;
@@ -15,21 +16,15 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> Get(string login)
     {
+        var procedure = "GetUserByLogin";
         using var connection = context.CreateConnection();
-        var sql = @"
-            SELECT * FROM Users 
-            WHERE Login = @login
-        ";
-        return await connection.QuerySingleOrDefaultAsync<User>(sql, new { login });
+        return await connection.QuerySingleOrDefaultAsync<User>(procedure, new { login }, commandType: CommandType.StoredProcedure);
     }
 
     public async Task Create(User user)
     {
+        var procedure = "AddUser";
         using var connection = context.CreateConnection();
-        var sql = @"
-            INSERT INTO Users (Login, PasswordHash)
-            VALUES (@Login, @PasswordHash)
-        ";
-        await connection.ExecuteAsync(sql, user);
+        await connection.ExecuteAsync(procedure, new { user.Login, user.PasswordHash }, commandType: CommandType.StoredProcedure);
     }
 }

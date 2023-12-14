@@ -1,6 +1,6 @@
-namespace NewsParser.Models.Users;
-
 using System.ComponentModel.DataAnnotations;
+
+namespace NewsParser.Models.Users;
 
 public class UserRequest
 {

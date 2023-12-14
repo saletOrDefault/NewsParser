@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using NewsParser.Models.Users;
 using NewsParser.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
 namespace NewsParser.Controllers;
 

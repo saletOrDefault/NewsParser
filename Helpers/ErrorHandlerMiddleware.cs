@@ -1,47 +1,46 @@
 using System.Net;
 using System.Text.Json;
 
-namespace NewsParser.Helpers
+namespace NewsParser.Helpers;
+
+public class ErrorHandlerMiddleware
 {
-    public class ErrorHandlerMiddleware
+    private readonly RequestDelegate next;
+    private readonly ILogger<ErrorHandlerMiddleware> logger;
+
+    public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
     {
-        private readonly RequestDelegate next;
-        private readonly ILogger<ErrorHandlerMiddleware> logger;
+        this.next = next;
+        this.logger = logger;
+    }
 
-        public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
+    public async Task Invoke(HttpContext context)
+    {
+        try
         {
-            this.next = next;
-            this.logger = logger;
+            await next(context);
         }
-
-        public async Task Invoke(HttpContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await next(context);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Unhandled exception");
-                await HandleExceptionAsync(context, ex);
-            }
+            logger.LogError(ex, "Unhandled exception");
+            await HandleExceptionAsync(context, ex);
         }
+    }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            var code = HttpStatusCode.InternalServerError; // 500 if unexpected
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        var code = HttpStatusCode.InternalServerError; // 500 if unexpected
 
-            if (exception is ArgumentException) code = HttpStatusCode.BadRequest;
-            else if (exception is MyException) code = HttpStatusCode.BadRequest;
-            else if (exception is KeyNotFoundException) code = HttpStatusCode.NotFound;
-            else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
-            else if (exception is NotImplementedException) code = HttpStatusCode.NotImplemented;
+        if (exception is ArgumentException) code = HttpStatusCode.BadRequest;
+        else if (exception is MyException) code = HttpStatusCode.BadRequest;
+        else if (exception is KeyNotFoundException) code = HttpStatusCode.NotFound;
+        else if (exception is UnauthorizedAccessException) code = HttpStatusCode.Unauthorized;
+        else if (exception is NotImplementedException) code = HttpStatusCode.NotImplemented;
 
-            var result = JsonSerializer.Serialize(new { error = code == HttpStatusCode.InternalServerError ? "Internal Error" : exception.Message });
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
+        var result = JsonSerializer.Serialize(new { error = code == HttpStatusCode.InternalServerError ? "Internal Error" : exception.Message });
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)code;
 
-            return context.Response.WriteAsync(result);
-        }
+        return context.Response.WriteAsync(result);
     }
 }

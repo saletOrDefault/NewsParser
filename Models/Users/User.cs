@@ -1,6 +1,6 @@
-namespace NewsParser.Models.Users;
-
 using System.Text.Json.Serialization;
+
+namespace NewsParser.Models.Users;
 
 public class User
 {

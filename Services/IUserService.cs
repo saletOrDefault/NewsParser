@@ -1,6 +1,6 @@
-namespace NewsParser.Services;
-
 using NewsParser.Models.Users;
+
+namespace NewsParser.Services;
 
 public interface IUserService
 {
